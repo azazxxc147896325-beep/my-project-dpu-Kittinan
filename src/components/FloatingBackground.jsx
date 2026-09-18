@@ -13,6 +13,9 @@ export default function FloatingBackground() {
         <p className="text-4xl md:text-6xl font-black tracking-widest text-indigo-900/[0.04]">
           กิตตินันท์ บุญคุ้ม
         </p>
+        <p className="text-3xl md:text-5xl font-black tracking-widest text-indigo-900/[0.04] mt-2">
+          66112126
+        </p>
       </div>
 
       {/* Floating Badge 1 - Top Left */}
@@ -31,7 +34,7 @@ export default function FloatingBackground() {
         style={{ animationDelay: "1s" }}
       >
         <div className="px-4 py-2 rounded-xl bg-purple-500/15 backdrop-blur-sm border border-purple-400/30 text-purple-800 font-bold text-sm shadow-sm">
-          กิตตินันท์
+          66112126
         </div>
       </div>
 
@@ -41,7 +44,7 @@ export default function FloatingBackground() {
         style={{ animationDelay: "2s" }}
       >
         <div className="px-3.5 py-1.5 rounded-xl bg-blue-500/15 backdrop-blur-sm border border-blue-400/30 text-blue-800 font-medium text-xs shadow-sm">
-          IG342 Project
+          66112126 (IG342)
         </div>
       </div>
 
@@ -61,7 +64,7 @@ export default function FloatingBackground() {
         style={{ animationDelay: "1.5s" }}
       >
         <div className="px-4 py-2 rounded-xl bg-emerald-500/15 backdrop-blur-sm border border-emerald-400/30 text-emerald-800 font-bold text-sm shadow-sm">
-          DPU IT
+          66112126
         </div>
       </div>
 
@@ -71,7 +74,7 @@ export default function FloatingBackground() {
         style={{ animationDelay: "2.5s" }}
       >
         <div className="px-4 py-2 rounded-xl bg-slate-500/15 backdrop-blur-sm border border-slate-400/30 text-slate-800 font-medium text-xs shadow-sm">
-          กิตตินันท์ บุญคุ้ม
+          กิตตินันท์ บุญคุ้ม (66112126)
         </div>
       </div>
     </div>

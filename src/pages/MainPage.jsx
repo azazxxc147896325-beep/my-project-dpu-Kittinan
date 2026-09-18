@@ -22,7 +22,7 @@ export default function MainPage() {
 
         {/* Student Info */}
         <p className="text-base font-semibold text-gray-700">
-          กิตตินันท์ บุญคุ้ม
+          กิตตินันท์ บุญคุ้ม • รหัสนักศึกษา 66112126
         </p>
 
         <p className="text-sm text-gray-500 max-w-md mx-auto mt-3 mb-6 leading-relaxed">

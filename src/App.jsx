@@ -39,7 +39,7 @@ export default function App() {
                 IG342 Project
               </h1>
               <p className="text-[11px] text-gray-500">
-                กิตตินันท์ บุญคุ้ม
+                กิตตินันท์ บุญคุ้ม (66112126)
               </p>
             </div>
           </Link>
@@ -79,7 +79,7 @@ export default function App() {
       <footer className="relative z-20 bg-white border-t border-gray-200 py-4">
         <div className="max-w-5xl mx-auto px-4 text-center">
           <p className="text-xs text-gray-400 uppercase tracking-wider">
-            กิตตินันท์ บุญคุ้ม • IG342 DPU 2026
+            กิตตินันท์ บุญคุ้ม • 66112126 • IG342 DPU 2026
           </p>
         </div>
       </footer>
