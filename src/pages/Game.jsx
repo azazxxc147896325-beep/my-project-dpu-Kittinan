@@ -143,8 +143,12 @@ export default function Game() {
             y: -40,
             width: enemyWidth,
             height: 36,
-            speed: 1.6 + Math.random() * 1.0,
-            lastShotTime: now + 500 + Math.random() * 1000,
+            speed: 1.5 + Math.random() * 0.9,
+            burstRemaining: 3, // ยิงชุดละ 3 นัดต่อเนื่อง
+            lastShotTime: 0,
+            burstInterval: 240, // หน่วงเวลาระหว่างนัดในชุด 240ms
+            nextBurstTime: 0,
+            burstCooldown: 1800, // หน่วงเวลาระหว่างชุด 1.8 วินาที
           });
         }
 
@@ -157,21 +161,34 @@ export default function Game() {
           }
         }
 
-        // Enemies shoot back and move
+        // Enemies shoot back in 3-round bursts and move
         for (let i = state.enemies.length - 1; i >= 0; i--) {
           const enemy = state.enemies[i];
           enemy.y += enemy.speed;
 
-          // Enemy shoots back!
-          if (enemy.y > 30 && enemy.y < 330 && now - enemy.lastShotTime > 1600) {
-            enemy.lastShotTime = now;
-            state.enemyBullets.push({
-              x: enemy.x + enemy.width / 2 - 3,
-              y: enemy.y + enemy.height + 4,
-              width: 6,
-              height: 12,
-              speed: 4.2,
-            });
+          // Enemy shoots 3-round burst starting immediately when emerging from the border (y >= 0)
+          if (enemy.y >= 0 && enemy.y < 360) {
+            if (enemy.burstRemaining > 0) {
+              if (now - enemy.lastShotTime >= enemy.burstInterval) {
+                enemy.lastShotTime = now;
+                enemy.burstRemaining -= 1;
+
+                state.enemyBullets.push({
+                  x: enemy.x + enemy.width / 2 - 3,
+                  y: enemy.y + enemy.height + 4,
+                  width: 6,
+                  height: 12,
+                  speed: 4.4,
+                });
+
+                if (enemy.burstRemaining === 0) {
+                  enemy.nextBurstTime = now + enemy.burstCooldown;
+                }
+              }
+            } else if (now >= enemy.nextBurstTime) {
+              // Reload 3-round burst
+              enemy.burstRemaining = 3;
+            }
           }
 
           // Check enemy hit by player bullet
@@ -472,7 +489,7 @@ export default function Game() {
 
         <div className="text-left bg-gray-50 p-3 rounded-xl border border-gray-200 text-xs text-gray-600">
           <p className="font-semibold text-gray-700 mb-1">วิธีเล่น & ฟังก์ชันใหม่:</p>
-          <p>• <strong>ศัตรูยิงสวน:</strong> รถถังสีแดงจะยิงกระสุนสีส้มสวนลงมา ต้องคอยหลบ</p>
+          <p>• <strong>ศัตรูยิงชุด 3 นัด:</strong> รถถังศัตรูจะยิงกระสุนต่อเนื่อง 3 นัดทันทีที่โผล่ออกมาจากขอบจอ</p>
           <p>• <strong>ยิงทำลายกระสุน:</strong> สามารถยิงกระสุนของเราไปชนกระสุนศัตรูเพื่อสกัดกั้นได้</p>
           <p>• <strong>การควบคุม:</strong> ใช้ปุ่มลูกศร ซ้าย/ขวา + Spacebar หรือกดปุ่มสัมผัสด้านล่าง</p>
         </div>
