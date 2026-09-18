@@ -441,9 +441,9 @@ export default function Game() {
         <div className="flex justify-center mb-4">
           <canvas
             ref={canvasRef}
-            width={380}
-            height={460}
-            className="rounded-xl shadow-inner border border-gray-300 w-full max-w-[380px] h-[460px] bg-slate-800"
+            width={360}
+            height={450}
+            className="rounded-xl shadow-inner border border-gray-300 w-full max-w-[360px] h-[450px] bg-slate-800 touch-none select-none"
           />
         </div>
 
@@ -451,7 +451,7 @@ export default function Game() {
         {!gameStarted || gameOver ? (
           <button
             onClick={startGame}
-            className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-bold rounded-xl shadow-sm transition-all text-sm mb-3"
+            className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-bold rounded-xl shadow-sm transition-all text-sm mb-3 cursor-pointer"
           >
             {gameOver ? "เริ่มเล่นใหม่อีกครั้ง" : "เริ่มเล่นเกม"}
           </button>
@@ -461,16 +461,19 @@ export default function Game() {
             <button
               onMouseDown={() => { gameState.current.keys.left = true; }}
               onMouseUp={() => { gameState.current.keys.left = false; }}
-              onTouchStart={() => { gameState.current.keys.left = true; }}
-              onTouchEnd={() => { gameState.current.keys.left = false; }}
-              className="py-3 bg-gray-100 hover:bg-gray-200 active:bg-gray-300 rounded-xl font-bold text-sm text-gray-800 select-none border border-gray-300"
+              onTouchStart={(e) => { e.preventDefault(); gameState.current.keys.left = true; }}
+              onTouchEnd={(e) => { e.preventDefault(); gameState.current.keys.left = false; }}
+              style={{ touchAction: "manipulation" }}
+              className="py-3.5 bg-gray-100 hover:bg-gray-200 active:bg-gray-300 rounded-xl font-bold text-sm text-gray-800 select-none border border-gray-300 cursor-pointer"
             >
               เลี้ยวซ้าย
             </button>
 
             <button
               onClick={shootBullet}
-              className="py-3 bg-red-600 hover:bg-red-700 active:scale-95 text-white font-bold rounded-xl shadow-sm text-sm select-none"
+              onTouchStart={(e) => { e.preventDefault(); shootBullet(); }}
+              style={{ touchAction: "manipulation" }}
+              className="py-3.5 bg-red-600 hover:bg-red-700 active:scale-95 text-white font-bold rounded-xl shadow-sm text-sm select-none cursor-pointer"
             >
               ยิงกระสุน
             </button>
@@ -478,9 +481,10 @@ export default function Game() {
             <button
               onMouseDown={() => { gameState.current.keys.right = true; }}
               onMouseUp={() => { gameState.current.keys.right = false; }}
-              onTouchStart={() => { gameState.current.keys.right = true; }}
-              onTouchEnd={() => { gameState.current.keys.right = false; }}
-              className="py-3 bg-gray-100 hover:bg-gray-200 active:bg-gray-300 rounded-xl font-bold text-sm text-gray-800 select-none border border-gray-300"
+              onTouchStart={(e) => { e.preventDefault(); gameState.current.keys.right = true; }}
+              onTouchEnd={(e) => { e.preventDefault(); gameState.current.keys.right = false; }}
+              style={{ touchAction: "manipulation" }}
+              className="py-3.5 bg-gray-100 hover:bg-gray-200 active:bg-gray-300 rounded-xl font-bold text-sm text-gray-800 select-none border border-gray-300 cursor-pointer"
             >
               เลี้ยวขวา
             </button>
