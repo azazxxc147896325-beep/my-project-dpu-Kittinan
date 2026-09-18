@@ -12,8 +12,8 @@ export default function About() {
   };
 
   return (
-    <div className="relative z-10 max-w-md mx-auto p-6 text-center">
-      <div className="bg-white rounded-2xl p-8 shadow-md border border-gray-200">
+    <div className="relative z-10 max-w-md mx-auto p-4 sm:p-6 text-center">
+      <div className="bg-white rounded-2xl p-5 sm:p-8 shadow-md border border-gray-200">
         <h2 className="text-2xl font-bold text-gray-800 mb-2">
           หน้า About
         </h2>

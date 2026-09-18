@@ -15,8 +15,8 @@ export default function Features() {
   const currentColorObj = colors.find((c) => c.id === color) || colors[0];
 
   return (
-    <div className="relative z-10 max-w-md mx-auto p-6 text-center">
-      <div className="bg-white rounded-2xl p-8 shadow-md border border-gray-200">
+    <div className="relative z-10 max-w-md mx-auto p-4 sm:p-6 text-center">
+      <div className="bg-white rounded-2xl p-5 sm:p-8 shadow-md border border-gray-200">
         <h2 className="text-2xl font-bold text-gray-800 mb-2">
           หน้า Features
         </h2>
@@ -29,18 +29,18 @@ export default function Features() {
           <label className="text-xs font-semibold text-gray-600 block mb-2 text-left">
             เลือกสีกล่อง:
           </label>
-          <div className="grid grid-cols-4 gap-2">
+          <div className="grid grid-cols-4 gap-1.5 sm:gap-2">
             {colors.map((c) => (
               <button
                 key={c.id}
                 onClick={() => setColor(c.id)}
-                className={`py-2 px-3 text-xs font-semibold rounded-lg border transition-all ${
+                className={`flex items-center justify-center text-center py-2.5 px-1 sm:px-3 text-xs font-semibold rounded-lg border transition-all whitespace-nowrap ${
                   color === c.id
-                    ? "border-gray-900 bg-gray-900 text-white"
+                    ? "border-gray-900 bg-gray-900 text-white shadow-sm"
                     : "border-gray-200 bg-gray-50 text-gray-700 hover:bg-gray-100"
                 }`}
               >
-                {c.name}
+                <span className="w-full text-center leading-none">{c.name}</span>
               </button>
             ))}
           </div>

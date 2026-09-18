@@ -4,8 +4,8 @@ export default function Home() {
   const [count, setCount] = useState(0);
 
   return (
-    <div className="relative z-10 max-w-md mx-auto p-6 text-center">
-      <div className="bg-white rounded-2xl p-8 shadow-md border border-gray-200">
+    <div className="relative z-10 max-w-md mx-auto p-4 sm:p-6 text-center">
+      <div className="bg-white rounded-2xl p-5 sm:p-8 shadow-md border border-gray-200">
         <h2 className="text-2xl font-bold text-gray-800 mb-2">
           หน้า Home
         </h2>
@@ -22,10 +22,10 @@ export default function Home() {
         </div>
 
         {/* Buttons */}
-        <div className="flex justify-center gap-3 mb-4">
+        <div className="flex flex-wrap justify-center gap-2.5 sm:gap-3 mb-4">
           <button
             onClick={() => setCount(count + 1)}
-            className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg transition-colors"
+            className="flex-1 min-w-[80px] py-2.5 px-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg transition-colors flex items-center justify-center text-center"
           >
             เพิ่ม (+1)
           </button>
@@ -33,14 +33,14 @@ export default function Home() {
           <button
             onClick={() => setCount(count > 0 ? count - 1 : 0)}
             disabled={count === 0}
-            className="px-5 py-2.5 bg-gray-200 hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed text-gray-700 font-semibold rounded-lg transition-colors"
+            className="flex-1 min-w-[80px] py-2.5 px-3 bg-gray-200 hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed text-gray-700 font-semibold rounded-lg transition-colors flex items-center justify-center text-center"
           >
             ลด (-1)
           </button>
 
           <button
             onClick={() => setCount(0)}
-            className="px-5 py-2.5 bg-red-100 hover:bg-red-200 text-red-700 font-semibold rounded-lg transition-colors"
+            className="flex-1 min-w-[80px] py-2.5 px-3 bg-red-100 hover:bg-red-200 text-red-700 font-semibold rounded-lg transition-colors flex items-center justify-center text-center"
           >
             รีเซ็ต
           </button>
