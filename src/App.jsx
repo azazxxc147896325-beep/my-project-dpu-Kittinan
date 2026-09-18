@@ -4,6 +4,7 @@ import MainPage from "./pages/MainPage";
 import Home from "./pages/Home";
 import Features from "./pages/Features";
 import About from "./pages/About";
+import Game from "./pages/Game";
 import FloatingBackground from "./components/FloatingBackground";
 import logoImg from "./assets/logo.png";
 
@@ -57,6 +58,10 @@ export default function App() {
             <NavLink to="/about" className={navLinkStyle}>
               About
             </NavLink>
+
+            <NavLink to="/game" className={navLinkStyle}>
+              Game
+            </NavLink>
           </nav>
         </div>
       </header>
@@ -69,10 +74,11 @@ export default function App() {
           <Route path="/" element={<MainPage />} />
           <Route path="/main" element={<MainPage />} />
 
-          {/* 3 หน้าเนื้อหา */}
+          {/* 4 หน้าเนื้อหา */}
           <Route path="/home" element={<Home />} />
           <Route path="/features" element={<Features />} />
           <Route path="/about" element={<About />} />
+          <Route path="/game" element={<Game />} />
 
           {/* Fallback ทุกกรณี เพื่อไม่ให้หน้าว่าง */}
           <Route path="*" element={<MainPage />} />

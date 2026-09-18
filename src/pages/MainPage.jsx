@@ -40,40 +40,52 @@ export default function MainPage() {
         </div>
 
         {/* Navigation Links Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-left">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-left">
           <Link
             to="/home"
-            className="p-4 rounded-xl bg-gray-50 hover:bg-indigo-50 border border-gray-200 hover:border-indigo-300 transition-all block"
+            className="p-3.5 rounded-xl bg-gray-50 hover:bg-indigo-50 border border-gray-200 hover:border-indigo-300 transition-all block"
           >
             <h3 className="font-bold text-sm text-gray-800">
               หน้า Home
             </h3>
             <p className="text-xs text-gray-500 mt-1">
-              ฟังก์ชันตัวนับจำนวน (Counter)
+              ตัวนับจำนวน
             </p>
           </Link>
 
           <Link
             to="/features"
-            className="p-4 rounded-xl bg-gray-50 hover:bg-indigo-50 border border-gray-200 hover:border-indigo-300 transition-all block"
+            className="p-3.5 rounded-xl bg-gray-50 hover:bg-indigo-50 border border-gray-200 hover:border-indigo-300 transition-all block"
           >
             <h3 className="font-bold text-sm text-gray-800">
               หน้า Features
             </h3>
             <p className="text-xs text-gray-500 mt-1">
-              ฟังก์ชันเปลี่ยนสีและข้อความ
+              เปลี่ยนสี/ข้อความ
             </p>
           </Link>
 
           <Link
             to="/about"
-            className="p-4 rounded-xl bg-gray-50 hover:bg-indigo-50 border border-gray-200 hover:border-indigo-300 transition-all block"
+            className="p-3.5 rounded-xl bg-gray-50 hover:bg-indigo-50 border border-gray-200 hover:border-indigo-300 transition-all block"
           >
             <h3 className="font-bold text-sm text-gray-800">
               หน้า About
             </h3>
             <p className="text-xs text-gray-500 mt-1">
-              ข้อมูลประวัติผู้พัฒนา
+              ข้อมูลผู้พัฒนา
+            </p>
+          </Link>
+
+          <Link
+            to="/game"
+            className="p-3.5 rounded-xl bg-gray-50 hover:bg-indigo-50 border border-gray-200 hover:border-indigo-300 transition-all block"
+          >
+            <h3 className="font-bold text-sm text-gray-800">
+              หน้า Game
+            </h3>
+            <p className="text-xs text-gray-500 mt-1">
+              เกมรถถังยิงกัน
             </p>
           </Link>
         </div>
