@@ -65,6 +65,7 @@ export default function App() {
       <main className="relative z-10 flex-grow flex items-center justify-center py-8 px-4">
         <Routes>
           {/* หน้าหลัก */}
+          <Route index element={<MainPage />} />
           <Route path="/" element={<MainPage />} />
           <Route path="/main" element={<MainPage />} />
 
@@ -72,6 +73,9 @@ export default function App() {
           <Route path="/home" element={<Home />} />
           <Route path="/features" element={<Features />} />
           <Route path="/about" element={<About />} />
+
+          {/* Fallback ทุกกรณี เพื่อไม่ให้หน้าว่าง */}
+          <Route path="*" element={<MainPage />} />
         </Routes>
       </main>
 
