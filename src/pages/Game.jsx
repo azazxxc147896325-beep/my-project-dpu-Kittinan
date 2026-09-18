@@ -9,13 +9,15 @@ export default function Game() {
 
   // References for game state inside animation loop
   const gameState = useRef({
-    player: { x: 180, y: 410, width: 40, height: 40, speed: 5 },
+    player: { x: 170, y: 405, width: 40, height: 40, speed: 5 },
     bullets: [],
     enemies: [],
+    enemyBullets: [],
     particles: [],
     keys: { left: false, right: false, space: false },
     lastEnemySpawn: 0,
     lastShotTime: 0,
+    playerInvulnerableUntil: 0,
     score: 0,
     lives: 3,
     running: false,
@@ -23,13 +25,15 @@ export default function Game() {
 
   const startGame = () => {
     gameState.current = {
-      player: { x: 180, y: 410, width: 40, height: 40, speed: 5 },
+      player: { x: 170, y: 405, width: 40, height: 40, speed: 5 },
       bullets: [],
       enemies: [],
+      enemyBullets: [],
       particles: [],
       keys: { left: false, right: false, space: false },
       lastEnemySpawn: Date.now(),
       lastShotTime: 0,
+      playerInvulnerableUntil: 0,
       score: 0,
       lives: 3,
       running: true,
@@ -44,7 +48,7 @@ export default function Game() {
     const state = gameState.current;
     if (!state.running) return;
     const now = Date.now();
-    if (now - state.lastShotTime < 250) return; // Fire rate limit
+    if (now - state.lastShotTime < 240) return; // Fire rate limit
     state.lastShotTime = now;
 
     state.bullets.push({
@@ -98,6 +102,7 @@ export default function Game() {
 
     const loop = () => {
       const state = gameState.current;
+      const now = Date.now();
 
       // Clear canvas
       ctx.fillStyle = "#1e293b"; // Slate-800 dark arena
@@ -106,13 +111,13 @@ export default function Game() {
       // Draw grid lines on battlefield
       ctx.strokeStyle = "rgba(255, 255, 255, 0.05)";
       ctx.lineWidth = 1;
-      for (let x = 0; x < canvas.width; x += 40) {
+      for (let x = 0; x < canvas.width; x += 38) {
         ctx.beginPath();
         ctx.moveTo(x, 0);
         ctx.lineTo(x, canvas.height);
         ctx.stroke();
       }
-      for (let y = 0; y < canvas.height; y += 40) {
+      for (let y = 0; y < canvas.height; y += 38) {
         ctx.beginPath();
         ctx.moveTo(0, y);
         ctx.lineTo(canvas.width, y);
@@ -129,8 +134,7 @@ export default function Game() {
         }
 
         // Spawn enemy tanks
-        const now = Date.now();
-        if (now - state.lastEnemySpawn > 1200) {
+        if (now - state.lastEnemySpawn > 1300) {
           state.lastEnemySpawn = now;
           const enemyWidth = 36;
           const randomX = Math.random() * (canvas.width - enemyWidth - 20) + 10;
@@ -139,25 +143,38 @@ export default function Game() {
             y: -40,
             width: enemyWidth,
             height: 36,
-            speed: 1.8 + Math.random() * 1.2,
+            speed: 1.6 + Math.random() * 1.0,
+            lastShotTime: now + 500 + Math.random() * 1000,
           });
         }
 
-        // Update Bullets
+        // Update Player Bullets
         for (let i = state.bullets.length - 1; i >= 0; i--) {
           const b = state.bullets[i];
           b.y -= b.speed;
-          if (b.y < -10) {
+          if (b.y < -15) {
             state.bullets.splice(i, 1);
           }
         }
 
-        // Update Enemies & Collision with bullets
+        // Enemies shoot back and move
         for (let i = state.enemies.length - 1; i >= 0; i--) {
           const enemy = state.enemies[i];
           enemy.y += enemy.speed;
 
-          // Check hit by bullet
+          // Enemy shoots back!
+          if (enemy.y > 30 && enemy.y < 330 && now - enemy.lastShotTime > 1600) {
+            enemy.lastShotTime = now;
+            state.enemyBullets.push({
+              x: enemy.x + enemy.width / 2 - 3,
+              y: enemy.y + enemy.height + 4,
+              width: 6,
+              height: 12,
+              speed: 4.2,
+            });
+          }
+
+          // Check enemy hit by player bullet
           for (let j = state.bullets.length - 1; j >= 0; j--) {
             const bullet = state.bullets[j];
             if (
@@ -167,7 +184,7 @@ export default function Game() {
               bullet.y + bullet.height > enemy.y
             ) {
               // Create explosion particles
-              for (let p = 0; p < 8; p++) {
+              for (let p = 0; p < 10; p++) {
                 state.particles.push({
                   x: enemy.x + enemy.width / 2,
                   y: enemy.y + enemy.height / 2,
@@ -186,7 +203,7 @@ export default function Game() {
             }
           }
 
-          // Enemy reached bottom
+          // Enemy tank reached bottom
           if (enemy && enemy.y > canvas.height) {
             state.enemies.splice(i, 1);
             state.lives -= 1;
@@ -194,6 +211,74 @@ export default function Game() {
             if (state.lives <= 0) {
               state.running = false;
               setGameOver(true);
+            }
+          }
+        }
+
+        // Update Enemy Bullets & Check Hit on Player
+        for (let i = state.enemyBullets.length - 1; i >= 0; i--) {
+          const eb = state.enemyBullets[i];
+          eb.y += eb.speed;
+
+          // Check collision with player bullets (Bullet vs Bullet cancel)
+          for (let j = state.bullets.length - 1; j >= 0; j--) {
+            const pb = state.bullets[j];
+            if (
+              pb.x < eb.x + eb.width &&
+              pb.x + pb.width > eb.x &&
+              pb.y < eb.y + eb.height &&
+              pb.y + pb.height > eb.y
+            ) {
+              // Bullet collision sparks
+              for (let p = 0; p < 4; p++) {
+                state.particles.push({
+                  x: eb.x + 3,
+                  y: eb.y + 6,
+                  vx: (Math.random() - 0.5) * 4,
+                  vy: (Math.random() - 0.5) * 4,
+                  life: 10,
+                  color: "#ffffff",
+                });
+              }
+              state.bullets.splice(j, 1);
+              state.enemyBullets.splice(i, 1);
+              break;
+            }
+          }
+
+          // Check collision with player tank
+          if (state.enemyBullets[i]) {
+            const p = state.player;
+            if (
+              now > state.playerInvulnerableUntil &&
+              eb.x < p.x + p.width &&
+              eb.x + eb.width > p.x &&
+              eb.y < p.y + p.height &&
+              eb.y + eb.height > p.y
+            ) {
+              state.enemyBullets.splice(i, 1);
+              state.lives -= 1;
+              setLives(state.lives);
+              state.playerInvulnerableUntil = now + 1200; // 1.2s flash immunity
+
+              // Explosion on player
+              for (let pt = 0; pt < 12; pt++) {
+                state.particles.push({
+                  x: p.x + p.width / 2,
+                  y: p.y + p.height / 2,
+                  vx: (Math.random() - 0.5) * 7,
+                  vy: (Math.random() - 0.5) * 7,
+                  life: 20,
+                  color: "#ef4444",
+                });
+              }
+
+              if (state.lives <= 0) {
+                state.running = false;
+                setGameOver(true);
+              }
+            } else if (eb.y > canvas.height + 15) {
+              state.enemyBullets.splice(i, 1);
             }
           }
         }
@@ -210,29 +295,34 @@ export default function Game() {
         }
       }
 
-      // Draw Player Tank (Green)
+      // Draw Player Tank (Green - Flash when invulnerable)
       const p = state.player;
-      ctx.fillStyle = "#10b981"; // Tank Body
-      ctx.fillRect(p.x, p.y + 8, p.width, p.height - 8);
+      const isInvulnerable = now < state.playerInvulnerableUntil;
+      const isVisible = !isInvulnerable || Math.floor(now / 100) % 2 === 0;
 
-      // Tank Tracks (Dark Green)
-      ctx.fillStyle = "#065f46";
-      ctx.fillRect(p.x - 3, p.y + 6, 6, p.height - 4);
-      ctx.fillRect(p.x + p.width - 3, p.y + 6, 6, p.height - 4);
+      if (isVisible) {
+        ctx.fillStyle = "#10b981"; // Tank Body
+        ctx.fillRect(p.x, p.y + 8, p.width, p.height - 8);
 
-      // Tank Turret
-      ctx.fillStyle = "#059669";
-      ctx.beginPath();
-      ctx.arc(p.x + p.width / 2, p.y + p.height / 2 + 2, 9, 0, Math.PI * 2);
-      ctx.fill();
+        // Tank Tracks (Dark Green)
+        ctx.fillStyle = "#065f46";
+        ctx.fillRect(p.x - 3, p.y + 6, 6, p.height - 4);
+        ctx.fillRect(p.x + p.width - 3, p.y + 6, 6, p.height - 4);
 
-      // Tank Cannon (pointing UP)
-      ctx.strokeStyle = "#047857";
-      ctx.lineWidth = 4;
-      ctx.beginPath();
-      ctx.moveTo(p.x + p.width / 2, p.y + p.height / 2);
-      ctx.lineTo(p.x + p.width / 2, p.y - 6);
-      ctx.stroke();
+        // Tank Turret
+        ctx.fillStyle = "#059669";
+        ctx.beginPath();
+        ctx.arc(p.x + p.width / 2, p.y + p.height / 2 + 2, 9, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Tank Cannon (pointing UP)
+        ctx.strokeStyle = "#047857";
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.moveTo(p.x + p.width / 2, p.y + p.height / 2);
+        ctx.lineTo(p.x + p.width / 2, p.y - 6);
+        ctx.stroke();
+      }
 
       // Draw Enemy Tanks (Red)
       state.enemies.forEach((enemy) => {
@@ -259,10 +349,16 @@ export default function Game() {
         ctx.stroke();
       });
 
-      // Draw Bullets (Yellow)
+      // Draw Player Bullets (Yellow)
       ctx.fillStyle = "#facc15";
       state.bullets.forEach((b) => {
         ctx.fillRect(b.x, b.y, b.width, b.height);
+      });
+
+      // Draw Enemy Bullets (Red / Orange)
+      ctx.fillStyle = "#f97316"; // Bright Orange
+      state.enemyBullets.forEach((eb) => {
+        ctx.fillRect(eb.x, eb.y, eb.width, eb.height);
       });
 
       // Draw Particles
@@ -273,7 +369,7 @@ export default function Game() {
 
       // Draw overlay if game not started or over
       if (!state.running && !gameOver && !gameStarted) {
-        ctx.fillStyle = "rgba(15, 23, 42, 0.75)";
+        ctx.fillStyle = "rgba(15, 23, 42, 0.8)";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = "#ffffff";
         ctx.font = "bold 18px sans-serif";
@@ -308,7 +404,7 @@ export default function Game() {
           หน้า Game รถถัง
         </h2>
         <p className="text-xs text-gray-500 mb-4">
-          บังคับรถถัง ยิงสกัดกั้นรถถังศัตรูไม่ให้หลุดรอด
+          บังคับรถถัง หลบกระสุนและยิงสวนรถถังศัตรู
         </p>
 
         {/* Game Stats Bar */}
@@ -375,9 +471,10 @@ export default function Game() {
         )}
 
         <div className="text-left bg-gray-50 p-3 rounded-xl border border-gray-200 text-xs text-gray-600">
-          <p className="font-semibold text-gray-700 mb-1">วิธีเล่น:</p>
-          <p>• <strong>คีย์บอร์ด:</strong> กดปุ่ม ลูกศรซ้าย/ขวา (หรือ A, D) เพื่อขยับ, กด Spacebar เพื่อยิง</p>
-          <p>• <strong>หน้าจอสัมผัส:</strong> กดปุ่ม เลี้ยวซ้าย, เลี้ยวขวา และ ยิงกระสุน ด้านล่างจอ</p>
+          <p className="font-semibold text-gray-700 mb-1">วิธีเล่น & ฟังก์ชันใหม่:</p>
+          <p>• <strong>ศัตรูยิงสวน:</strong> รถถังสีแดงจะยิงกระสุนสีส้มสวนลงมา ต้องคอยหลบ</p>
+          <p>• <strong>ยิงทำลายกระสุน:</strong> สามารถยิงกระสุนของเราไปชนกระสุนศัตรูเพื่อสกัดกั้นได้</p>
+          <p>• <strong>การควบคุม:</strong> ใช้ปุ่มลูกศร ซ้าย/ขวา + Spacebar หรือกดปุ่มสัมผัสด้านล่าง</p>
         </div>
       </div>
     </div>
